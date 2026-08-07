@@ -1,111 +1,56 @@
-// 1. Podstawowe wartości i stałe (Enumy zamiast magicznych stringów)
-type RarityType = 
-  | "legendary" 
-  | "epic" 
-  | "rare" 
-  | "common" 
-  | "uncommon" 
-  | "very_rare" 
-  | "unique";
+type Being = { 
+    idName: string // Poprawa literówki (idNmae -> idName)
+    stats: Stats 
+} 
 
-// 2. Statystyki walki (zadanie do poprawy - unikamy podwojenia HealthStats)
-type CombatStats = {
-  baseDamage: number;
-  damage: number;          // Obliczone (current)
-  
-  baseDefense: number;
-  defense: number;         // Obliczone (current)
+type Enemy = { 
+    identity: Being // Zmiana "rights" na "identity", bo 'rights' to prawa, nie cecha postaci. 
+                    // Zachowano strukturę składu (Being).
+    loot: Item[] 
+    gold?: number 
+    rarity: RarityType // Poprawa typu - usunięto zbędny wrapper 'rarities' 
+    description?: string // Poprawiono literówkę w komentarzu/dlaczego nie używamy ? dla opcyjności, ale tu jest ok
+} 
 
-  baseSpeed: number;
-  speed: number;           // Obliczone (current)
+// Usunięto opakowanie 'rarity: { rarity: ... }', ponieważ w grach rarytet to zwykła wartość typu string.
+type RarityType = "legendary" | "epic" | "rare" | "common" | "uncommon" | "very_rare" | "unique" 
 
-  baseEvasion: number;     // Spisanie "evasines" -> Evasion
-  evasion: number;         // Spisanie "evasines" -> Evasion
-  
-  maxHealth: number;       // HP jest częścią CombatStats lub osobnym typem, zależnie od architektury
-                           // Tutaj połączylismy dla uproszczenia, albo zostawiamy HealthStats osobno jeśli potrzebujesz logiki
-};
+type Item ={ 
+    idName: string // Spójne nazewnictwo z typem Being (mall 'IdName' na 'idName')
+    description: string // Poprawa literówki descryption -> description
+    type: string // Zachowano jako string zgodnie z Twoim stylem, ale warto dodać Enum jeśli planujesz to rozszerzyć
+    value: number 
+    rarity: RarityType // Użycie poprawionego typu powyżej
+    maxStack: number | "unique" 
+    usage: string 
+} 
 
-// 3. Stan zdrowia (zgodny z Twoim stylem)
-type Health = {
-  currentHealth: number;
-  maxHealth: number;       // Renamed for clarity
-};
+type HealthStats = { 
+    maxHealth: number // Usunięto spacje przed dwukropkiem, naprawiono literówki w nazwach pól jeśli istniały (tu były OK)
+    health: number 
+} 
 
-type Stats = {
-  damage: CombatStats['damage'] & { baseDamage: number }; 
-  defense: CombatStats['defense'] & { baseDefense: number };
-  speed: CombatStats['speed'] & { baseSpeed: number };
-  
-  // Jeśli HealthStats jest osobnym obiektem, to tutaj może go mieć, ale lepiej wgrać bezpośrednio dla wydajności
-  health: Health; 
-};
+type Stats = { 
+    baseDmg: number 
+    dmg: number 
+    baseDefence: number 
+    defence: number 
+    baseSpeed: number 
+    speed: number 
+    baseEvasion: number // Naprawiono literówkę "evasines" -> "evasion" dla spójności
+    evasion: number 
+    HealthStats: HealthStats // Zachowano składowanie, ale upewnij się, że nie jest to redundancja logiczna
+} 
 
-// Lepsza struktura Stats - proponuję płaską strukturę dla łatwiejszego dostępu
-type CharacterStats = {
-  hp: number;           // Current HP
-  maxHp: number;        // Max HP
-  
-  attack: number;       // Damage (current)
-  def: number;          // Defense (current)
-  speed: number;        // Speed (current)
-  
-  critChance?: number;  // Dodałem krytyczną szansę jako bonus
-};
-
-// 4. Bycie / Istota (Zmieniono "idNmae" na id + name, poprawiono "rights")
-type Identity = {
-  id: string;            // UUID lub nazwa ID
-  name: string;          // Nazwa postaci
-};
-
-// 5. Przedmiot (Item)
-type Item = {
-  id: string;            // Unikaj IdName na rzecz oddzielenia ID i Nazwy
-  name: string;          // Poprawka "descryption" -> description
-  description: string;
-  
-  type: ItemType;        // Typ enum zamiast string
-  value: number;         // Wartość rynkowa
-    
-  rarity: RarityType;    // Bez wrappera, bezpośrednio string
-  maxStack: number | 'unique'; // 'unique' jako literalny typ
-  
-  usage: string;         // Np. "Ręka" lub "Głowa", jeśli to slot na ekwipunku
-};
-
-enum ItemType {
-  Weapon = "weapon",
-  Armor = "armor",
-  Consumable = "consumable",
-  Accessory = "accessory"
+type Player = { 
+    identity: Being // Spójność z typem Enemy (użyłem "identity" zamiast "rights")
+    items: Item[] 
+    gold: number // Spójne nazewnictwo małych liter ('Gold' -> 'gold')
+    level: LevelSystem // Poprawa wielkości liter typu (levelSystem)
 }
 
-// 6. Być (Being) - wspólne dla Gracza i Przeciwnika
-type BeingData = { // Nazwa "Being" jest abstrakcyjna, "CharacterData" może być lepsza
-  identity: Identity;    // Oddzielenie tożsamości od statów
-  stats: CharacterStats; 
-};
-
-// 7. Gracz i Przeciwnik (Składanie)
-type Player = {
-  being: BeingData;      // Zamiast "rights" - bardziej semantyczne
-  items: Item[];         // Inwentarz gracza
-  gold: number;          // Zawsze liczba, bo gracz zawsze ma złoto (0 też OK)
-  level: Level;          // Oddzielenie typu poziomu
-};
-
-type Enemy = {
-  being: BeingData;      // Przeciwnik również posiada statystyki i nazwę
-  loot: Item[];          // To, co upadnie z niego po zabiciu
-  gold?: number;         // Złoto na ciele (dymki)
-  rarity: RarityType;    // Rarytet przeciwnika (np. dla kolorów UI)
-  description?: string; 
-};
-
-// 8. System Poziomów
-type Level = {
-  level: number;         // np. 5
-  exp: number;           // Obecnie XP
-  nextLevelExp: number;  // Wymagane do następnego poziomu
-};
+type LevelSystem = { // Poprawa wielkości liter (levelSystem -> LevelSystem)
+    level: number 
+    exp: number 
+    nextLevelExp: number 
+}
