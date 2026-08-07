@@ -1,6 +1,6 @@
-import { Room } from "./types";
-import { RoomPool } from "./entitis/Rooms";
-import { BossRoom } from "./entitis/Rooms";
+import { Room } from "../types";
+import { RoomPool } from "../entitis/Rooms";
+import { BossRoom } from "../entitis/Rooms";
 
 export function generateRoom(roomNumber: number): Room {
 
