@@ -4,7 +4,7 @@ import type { ItemId } from "../types";
 
 
 // Przykładowy gracz - Wojownik
-export const examplePlayer: Player = {
+export const PlayerState: Player = {
     identity: {
         idName: "WillBeGiven",
         stats: {
