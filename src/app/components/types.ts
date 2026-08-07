@@ -54,3 +54,8 @@ type LevelSystem = { // Poprawa wielkości liter (levelSystem -> LevelSystem)
     exp: number 
     nextLevelExp: number 
 }
+
+type Room = {
+    type: "Normal" | "Special"
+    
+}
