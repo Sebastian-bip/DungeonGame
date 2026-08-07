@@ -23,7 +23,7 @@ export function generateRoom(roomNumber: number): Room {
 function getRandomRoom(): Room {
 
     const totalWeight = RoomPool.reduce(
-        (total, room) => total + room.weight,
+        (total:number, room:Room) => total + room.weight,
         0
     );
 
