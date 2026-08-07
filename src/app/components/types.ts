@@ -55,9 +55,28 @@ export type LevelSystem = { // Poprawa wielkości liter (levelSystem -> LevelSys
     nextLevelExp: number 
 }
 
+export type RoomType =
+    | "normal"
+    | "boss"
+    | "shop"
+    | "puzzle"
+    | "campfire"
+    | "chest"
+    | "event";
+
+
 export type Room = {
-    type: "Normal" | "Special"
-}
+    id: string;
+    type: RoomType;
+
+    name: string;
+
+    description?: string;
+
+    exits: number;
+
+    weight: number;
+};
 
 export type ItemId = string;
 

@@ -80,3 +80,19 @@ export const enemy2: Enemy = {
     rarity: "epic",
     description: "Ognisty golem strzeżący wejście do komnaty"
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Lista wrogów
+
+export const Enemies: Enemy[] = [enemy1, enemy2];
