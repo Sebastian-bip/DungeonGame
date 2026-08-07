@@ -1,21 +1,21 @@
-type Being = { 
+export type Being = {
     idName: string // Poprawa literówki (idNmae -> idName)
     stats: Stats 
 } 
 
-type Enemy = { 
+export type Enemy = {
     identity: Being // Zmiana "rights" na "identity", bo 'rights' to prawa, nie cecha postaci. 
                     // Zachowano strukturę składu (Being).
-    loot: Item[] 
+    loot: ItemId[] // Zmiana 'loot' na 'items
     gold?: number 
-    rarity: RarityType // Poprawa typu - usunięto zbędny wrapper 'rarities' 
-    description?: string // Poprawiono literówkę w komentarzu/dlaczego nie używamy ? dla opcyjności, ale tu jest ok
+    rarity: RarityType // Poprawia typu - usunięto zbędny wrapper 'rarities'
+    description?: string // Poprawiono literówkę w komentarzu/dlaczego nie użyjemy ? dla opcyjności, ale tu jest ok
 } 
 
 // Usunięto opakowanie 'rarity: { rarity: ... }', ponieważ w grach rarytet to zwykła wartość typu string.
-type RarityType = "legendary" | "epic" | "rare" | "common" | "uncommon" | "very_rare" | "unique" 
+export type RarityType = "legendary" | "epic" | "rare" | "common" | "uncommon" | "very_rare" | "unique"
 
-type Item ={ 
+export type Item ={
     idName: string // Spójne nazewnictwo z typem Being (mall 'IdName' na 'idName')
     description: string // Poprawa literówki descryption -> description
     type: string // Zachowano jako string zgodnie z Twoim stylem, ale warto dodać Enum jeśli planujesz to rozszerzyć
@@ -25,12 +25,12 @@ type Item ={
     usage: string 
 } 
 
-type HealthStats = { 
+export type HealthStats = {
     maxHealth: number // Usunięto spacje przed dwukropkiem, naprawiono literówki w nazwach pól jeśli istniały (tu były OK)
     health: number 
 } 
 
-type Stats = { 
+export type Stats = {
     baseDmg: number 
     dmg: number 
     baseDefence: number 
@@ -42,20 +42,22 @@ type Stats = {
     HealthStats: HealthStats // Zachowano składowanie, ale upewnij się, że nie jest to redundancja logiczna
 } 
 
-type Player = { 
+export type Player = {
     identity: Being // Spójność z typem Enemy (użyłem "identity" zamiast "rights")
-    items: Item[] 
+    items: ItemId[] 
     gold: number // Spójne nazewnictwo małych liter ('Gold' -> 'gold')
     level: LevelSystem // Poprawa wielkości liter typu (levelSystem)
 }
 
-type LevelSystem = { // Poprawa wielkości liter (levelSystem -> LevelSystem)
+export type LevelSystem = { // Poprawa wielkości liter (levelSystem -> LevelSystem)
     level: number 
     exp: number 
     nextLevelExp: number 
 }
 
-type Room = {
+export type Room = {
     type: "Normal" | "Special"
-    
 }
+
+export type ItemId = string;
+
