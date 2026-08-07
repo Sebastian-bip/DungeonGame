@@ -9,13 +9,13 @@ export const examplePlayer: Player = {
         idName: "WillBeGiven",
         stats: {
             baseDmg: 15,
-            dmg: 15,
+            dmg: 0,
             baseDefence: 15,
-            defence: 15,
+            defence: 0,
             baseSpeed: 5,
-            speed: 5,
+            speed: 0,
             baseEvasion: 2,
-            evasion: 2,
+            evasion: 0,
             HealthStats: {
                 maxHealth: 100,
                 health: 100
@@ -37,16 +37,16 @@ export const enemy1: Enemy = {
         idName: "Shadow_Stalker",
         stats: {
             baseDmg: 25,
-            dmg: 25,
+            dmg: 0,
             baseDefence: 8,
-            defence: 8,
+            defence: 0,
             baseSpeed: 12,
-            speed: 12,
+            speed: 0,
             baseEvasion: 10,
-            evasion: 10,
+            evasion: 0,
             HealthStats: {
                 maxHealth: 150,
-                health: 150
+                health: 0
             }
         }
     },
@@ -62,16 +62,16 @@ export const enemy2: Enemy = {
         idName: "Fire_Golem",
         stats: {
             baseDmg: 35,
-            dmg: 35,
+            dmg: 0,
             baseDefence: 20,
-            defence: 20,
+            defence: 0,
             baseSpeed: 6,
-            speed: 6,
+            speed: 0,
             baseEvasion: 3,
-            evasion: 3,
+            evasion: 0,
             HealthStats: {
                 maxHealth: 300,
-                health: 300
+                health: 0
             }
         }
     },
