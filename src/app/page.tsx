@@ -1,11 +1,16 @@
-export default function Home() {
-  return (
-    <main>
-      <h1>Terminal RPG</h1>
+import Terminal from "@/app/components/Terminal"
 
-      <p>
-        Game is starting...
-      </p>
-    </main>
-  );
+
+export default function Home() {
+
+    return (
+
+        <main>
+
+            <Terminal />
+
+        </main>
+
+    );
+
 }
