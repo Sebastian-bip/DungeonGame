@@ -68,13 +68,9 @@ export type RoomType =
 export type Room = {
     id: string;
     type: RoomType;
-
     name: string;
-
     description?: string;
-
-    exits: number;
-
+    exits: 1 | 2;
     weight: number;
 };
 
