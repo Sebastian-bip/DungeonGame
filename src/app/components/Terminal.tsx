@@ -12,16 +12,14 @@ export default function Terminal() {
         "          TERMINAL RPG",
         "================================",
         "",
-        "Wpisz 'help' aby zobaczyć komendy.",
+        "Wpisz 'help' aby zobaczyć dostępne komendy.",
         ""
     ]);
 
 
-    function executeCommand(command: string) {
+    function executeCommand(command: string): string[] {
 
-        const cmd = command
-            .trim()
-            .toLowerCase();
+        const cmd = command.trim().toLowerCase();
 
 
         switch (cmd) {
@@ -34,7 +32,7 @@ export default function Terminal() {
                     "help      - pokazuje listę komend",
                     "clear     - czyści terminal",
                     "about     - informacje o grze",
-                    "test      - test działania"
+                    "test      - sprawdza działanie systemu"
                 ];
 
 
@@ -77,21 +75,24 @@ export default function Terminal() {
 
 
     function handleSubmit(
-        e: React.FormEvent
+        e: React.FormEvent<HTMLFormElement>
     ) {
 
         e.preventDefault();
 
 
-        const result =
-            executeCommand(input);
+        const commandResult = executeCommand(input);
 
 
-        setHistory(prev => [
-            ...prev,
-            `> ${input}`,
-            ...result
-        ]);
+        if (input.trim().toLowerCase() !== "clear") {
+
+            setHistory(prev => [
+                ...prev,
+                `> ${input}`,
+                ...commandResult
+            ]);
+
+        }
 
 
         setInput("");
@@ -102,98 +103,47 @@ export default function Terminal() {
 
     return (
 
-        <main
-            className="
-                min-h-screen
-                bg-black
-                text-green-400
-                font-mono
-                p-6
-            "
-        >
+        <main className="min-h-screen bg-black text-green-400 font-mono p-6">
 
-            <div
-                className="
-                    max-w-4xl
-                    mx-auto
-                    border
-                    border-green-700
-                    rounded-lg
-                    p-5
-                    min-h-[500px]
-                    shadow-lg
-                    shadow-green-900/20
-                "
-            >
+            <div className="max-w-4xl mx-auto min-h-[500px] border border-green-700 rounded-lg p-5 shadow-lg shadow-green-900/20">
 
-                <div
-                    className="
-                        space-y-1
-                        whitespace-pre-wrap
-                    "
-                >
 
-                    {
-                        history.map(
-                            (line, index) => (
+                <div className="space-y-1 whitespace-pre-wrap">
 
-                                <p
-                                    key={index}
-                                >
-                                    {line}
-                                </p>
+                    {history.map((line, index) => (
 
-                            )
-                        )
-                    }
+                        <p key={index}>
+                            {line}
+                        </p>
+
+                    ))}
 
                 </div>
 
 
+
                 <form
                     onSubmit={handleSubmit}
-                    className="
-                        flex
-                        mt-4
-                    "
+                    className="flex mt-4"
                 >
 
-                    <span
-                        className="
-                            mr-2
-                            text-green-500
-                        "
-                    >
+                    <span className="mr-2 text-green-500">
                         {">"}
                     </span>
 
 
                     <input
-
                         autoFocus
-
                         value={input}
-
-                        onChange={
-                            e =>
-                            setInput(
-                                e.target.value
-                            )
-                        }
-
-                        className="
-                            flex-1
-                            bg-transparent
-                            outline-none
-                            text-green-400
-                            caret-green-400
-                        "
-
+                        onChange={(e) => setInput(e.target.value)}
+                        className="flex-1 bg-transparent outline-none text-green-400 caret-green-400"
                     />
 
                 </form>
 
+
             </div>
+
 
         </main>
 
