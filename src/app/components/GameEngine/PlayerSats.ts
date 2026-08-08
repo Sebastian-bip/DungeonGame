@@ -1,15 +1,17 @@
-import { PlayerState } from "../entitis/entitis";
+import type { Player } from "../types";
 
-export function PlayerStatsInfo(): string {
+export function PlayerStatsInfo(player: Player): string {
+    const { stats } = player.identity;
+
     return [
-        `Stan: ${PlayerState.identity.idName}  `,
-        `Zdrowie: ${PlayerState.identity.stats.HealthStats.health}`,
-        `Atak: ${PlayerState.identity.stats.dmg}`,
-        `Obrona: ${PlayerState.identity.stats.defence}`,
-        `Szybkość: ${PlayerState.identity.stats.speed}`,
-        `Unikliwość: ${PlayerState.identity.stats.evasion}`,
-        `Złoto: ${PlayerState.gold}`,
-        `Poziom: ${PlayerState.level.level}`,
-        `Przedmioty: ${PlayerState.items.join(", ")}`
+        `Postać: ${player.identity.idName}`,
+        `Zdrowie: ${stats.HealthStats.health}/${stats.HealthStats.maxHealth}`,
+        `Atak: ${stats.dmg}`,
+        `Obrona: ${stats.defence}`,
+        `Szybkość: ${stats.speed}`,
+        `Unik: ${stats.evasion}%`,
+        `Złoto: ${player.gold}`,
+        `Poziom: ${player.level.level} (${player.level.exp}/${player.level.nextLevelExp} EXP)`,
+        `Przedmioty: ${player.items.length > 0 ? player.items.join(", ") : "brak"}`
     ].join("\n");
 }

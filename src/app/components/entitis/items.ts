@@ -1,4 +1,4 @@
-import type { ItemId, Item } from "../types";
+import type { Item } from "../types";
 
 export const items: Item[] =[
     {

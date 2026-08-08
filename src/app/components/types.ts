@@ -1,59 +1,66 @@
-export type Being = {
-    idName: string // Poprawa literówki (idNmae -> idName)
-    stats: Stats 
-} 
+export type RarityType =
+    | "common"
+    | "uncommon"
+    | "rare"
+    | "epic"
+    | "very_rare"
+    | "legendary"
+    | "unique";
 
-export type Enemy = {
-    identity: Being // Zmiana "rights" na "identity", bo 'rights' to prawa, nie cecha postaci. 
-                    // Zachowano strukturę składu (Being).
-    loot: ItemId[] // Zmiana 'loot' na 'items
-    gold?: number 
-    rarity: RarityType // Poprawia typu - usunięto zbędny wrapper 'rarities'
-    description?: string // Poprawiono literówkę w komentarzu/dlaczego nie użyjemy ? dla opcyjności, ale tu jest ok
-} 
-
-// Usunięto opakowanie 'rarity: { rarity: ... }', ponieważ w grach rarytet to zwykła wartość typu string.
-export type RarityType = "legendary" | "epic" | "rare" | "common" | "uncommon" | "very_rare" | "unique"
-
-export type Item ={
-    idName: string // Spójne nazewnictwo z typem Being (mall 'IdName' na 'idName')
-    description: string // Poprawa literówki descryption -> description
-    type: string // Zachowano jako string zgodnie z Twoim stylem, ale warto dodać Enum jeśli planujesz to rozszerzyć
-    value: number 
-    rarity: RarityType // Użycie poprawionego typu powyżej
-    maxStack: number | "unique" 
-    usage: string 
-} 
+export type ItemId = string;
 
 export type HealthStats = {
-    maxHealth: number // Usunięto spacje przed dwukropkiem, naprawiono literówki w nazwach pól jeśli istniały (tu były OK)
-    health: number 
-} 
+    maxHealth: number;
+    health: number;
+};
 
 export type Stats = {
-    baseDmg: number 
-    dmg: number 
-    baseDefence: number 
-    defence: number 
-    baseSpeed: number 
-    speed: number 
-    baseEvasion: number // Naprawiono literówkę "evasines" -> "evasion" dla spójności
-    evasion: number 
-    HealthStats: HealthStats // Zachowano składowanie, ale upewnij się, że nie jest to redundancja logiczna
-} 
+    baseDmg: number;
+    dmg: number;
+    baseDefence: number;
+    defence: number;
+    baseSpeed: number;
+    speed: number;
+    baseEvasion: number;
+    evasion: number;
+    HealthStats: HealthStats;
+};
+
+export type Being = {
+    idName: string;
+    stats: Stats;
+};
+
+export type Item = {
+    idName: string;
+    description: string;
+    type: string;
+    value: number;
+    rarity: RarityType;
+    maxStack: number | "unique";
+    usage: string;
+};
+
+export type LevelSystem = {
+    level: number;
+    exp: number;
+    nextLevelExp: number;
+};
 
 export type Player = {
-    identity: Being // Spójność z typem Enemy (użyłem "identity" zamiast "rights")
-    items: ItemId[] 
-    gold: number // Spójne nazewnictwo małych liter ('Gold' -> 'gold')
-    level: LevelSystem // Poprawa wielkości liter typu (levelSystem)
-}
+    identity: Being;
+    items: ItemId[];
+    gold: number;
+    level: LevelSystem;
+};
 
-export type LevelSystem = { // Poprawa wielkości liter (levelSystem -> LevelSystem)
-    level: number 
-    exp: number 
-    nextLevelExp: number 
-}
+export type Enemy = {
+    identity: Being;
+    loot: ItemId[];
+    gold?: number;
+    rarity: RarityType;
+    description?: string;
+};
 
 export type RoomType =
     | "normal"
@@ -64,34 +71,41 @@ export type RoomType =
     | "chest"
     | "event";
 
-
 export type Room = {
     id: string;
     type: RoomType;
     name: string;
     description?: string;
-    exits: 1 | 2;
+    exits: number;
     weight: number;
 };
 
-export type ItemId = string;
+export type ExitRisk = "safe" | "risky";
+
+export type RoomExit = {
+    room: Room;
+    risk: ExitRisk;
+};
 
 export type GameStatus =
     | "menu"
-    | "playing"
     | "combat"
-    | "victory"
+    | "choosing_exit"
     | "game_over"
     | "finished";
 
 export type GameState = {
     player: Player;
-
     currentRoom: Room | null;
-
     currentEnemy: Enemy | null;
-
+    availableExits: RoomExit[];
     roomNumber: number;
-
     gameStatus: GameStatus;
 };
+
+export type StatType =
+    | "damage"
+    | "defence"
+    | "speed"
+    | "evasion"
+    | "health";

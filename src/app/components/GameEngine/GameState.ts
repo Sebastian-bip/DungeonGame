@@ -4,11 +4,13 @@ import { PlayerState } from "../entitis/entitis";
 
 export const InitialGameState: GameState = {
 
-    player: PlayerState,
+    player: structuredClone(PlayerState),
 
     currentRoom: null,
 
     currentEnemy: null,
+
+    availableExits: [],
 
     roomNumber: 0,
 

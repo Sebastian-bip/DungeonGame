@@ -1,16 +1,14 @@
-import { Room } from "../types";
-import { RoomPool } from "../entitis/Rooms";
-import { BossRoom } from "../entitis/Rooms";
+import type { Room, RoomExit } from "../types";
+import { RoomPool, BossRoom } from "../entitis/Rooms";
+
 
 export function generateRoom(roomNumber: number): Room {
 
-    // Co 15 pokój jest bossem
     if (roomNumber % 15 === 0) {
         return BossRoom;
     }
 
 
-    // Pierwszy pokój zawsze normalny
     if (roomNumber === 1) {
         return RoomPool[0];
     }
@@ -23,7 +21,7 @@ export function generateRoom(roomNumber: number): Room {
 function getRandomRoom(): Room {
 
     const totalWeight = RoomPool.reduce(
-        (total:number, room:Room) => total + room.weight,
+        (total, room) => total + room.weight,
         0
     );
 
@@ -44,4 +42,26 @@ function getRandomRoom(): Room {
 
 
     return RoomPool[0];
+}
+
+export function generateExits(
+    roomNumber: number
+): RoomExit[] {
+
+    const safeRoom = generateRoom(roomNumber + 1);
+
+    const riskyRoom = generateRoom(roomNumber + 1);
+
+
+    return [
+        {
+            room: safeRoom,
+            risk: "safe"
+        },
+
+        {
+            room: riskyRoom,
+            risk: "risky"
+        }
+    ];
 }

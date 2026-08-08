@@ -1,6 +1,5 @@
 import type { Player } from "../types";
 import type { Enemy } from "../types";
-import type { ItemId } from "../types";
 
 
 // Przykładowy gracz - Wojownik
