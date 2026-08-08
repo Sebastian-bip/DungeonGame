@@ -55,9 +55,43 @@ export type LevelSystem = { // Poprawa wielkości liter (levelSystem -> LevelSys
     nextLevelExp: number 
 }
 
+export type RoomType =
+    | "normal"
+    | "boss"
+    | "shop"
+    | "puzzle"
+    | "campfire"
+    | "chest"
+    | "event";
+
+
 export type Room = {
-    type: "Normal" | "Special"
-}
+    id: string;
+    type: RoomType;
+    name: string;
+    description?: string;
+    exits: 1 | 2;
+    weight: number;
+};
 
 export type ItemId = string;
 
+export type GameStatus =
+    | "menu"
+    | "playing"
+    | "combat"
+    | "victory"
+    | "game_over"
+    | "finished";
+
+export type GameState = {
+    player: Player;
+
+    currentRoom: Room | null;
+
+    currentEnemy: Enemy | null;
+
+    roomNumber: number;
+
+    gameStatus: GameStatus;
+};

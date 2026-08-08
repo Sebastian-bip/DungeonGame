@@ -80,3 +80,52 @@ export const enemy2: Enemy = {
     rarity: "epic",
     description: "Ognisty golem strzeżący wejście do komnaty"
 };
+export const enemy0: Enemy = {
+    identity: {
+        idName: "Forest_Rat",
+
+        stats: {
+            baseDmg: 8,
+            dmg: 0,
+
+            baseDefence: 3,
+            defence: 0,
+
+            baseSpeed: 8,
+            speed: 0,
+
+            baseEvasion: 5,
+            evasion: 0,
+
+            HealthStats: {
+                maxHealth: 40,
+                health: 0
+            }
+        }
+    },
+
+    loot: [
+        "Healing Potion"
+    ],
+
+    gold: 5,
+
+    rarity: "common",
+
+    description: "Mały szczur zamieszkujący podziemia."
+};
+
+
+
+
+
+
+
+
+
+
+
+
+// Lista wrogów
+
+export const Enemies: Enemy[] = [enemy0,enemy1, enemy2];
