@@ -76,3 +76,22 @@ export type Room = {
 
 export type ItemId = string;
 
+export type GameStatus =
+    | "menu"
+    | "playing"
+    | "combat"
+    | "victory"
+    | "game_over"
+    | "finished";
+
+export type GameState = {
+    player: Player;
+
+    currentRoom: Room | null;
+
+    currentEnemy: Enemy | null;
+
+    roomNumber: number;
+
+    gameStatus: GameStatus;
+};
