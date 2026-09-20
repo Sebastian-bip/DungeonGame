@@ -1,5 +1,5 @@
-INSTRUKCJA WDROŻENIA API I SQLITE — DUNGEON: ECHOES BELOW
-===========================================================
+INSTRUKCJA WDROŻENIA API I TURSO — DUNGEON: ECHOES BELOW
+==========================================================
 
 1. GDZIE ZNAJDUJE SIĘ API
 -------------------------
@@ -23,9 +23,17 @@ Kod bazy i uwierzytelniania jest w:
 
 2. WYMAGANE ŚRODOWISKO
 ----------------------
-Wymagany jest Node.js 22.5 lub nowszy; zalecany jest Node.js 24.
-Projekt korzysta z wbudowanego modułu node:sqlite, więc nie trzeba instalować
-pakietów sqlite3 ani better-sqlite3.
+Wymagany jest Node.js 20.9 lub nowszy. Projekt korzysta z pakietu
+@libsql/client do połączenia z Turso.
+
+Lokalnie utwórz plik .env.local (jest ignorowany przez Git):
+
+  TURSO_DATABASE_URL="libsql://..."
+  TURSO_AUTH_TOKEN="..."
+
+Na Vercel/hostingu dodaj te same dwie wartości jako zmienne środowiskowe dla
+Production, Preview i Development. NIE dodawaj tokenu do plików w src/ ani
+do repozytorium.
 
 W katalogu projektu uruchom:
 
@@ -37,34 +45,19 @@ Produkcja:
   npm run build
   npm run start
 
-Serwer musi działać jako Node.js (nie Edge Runtime) i mieć trwały zapis do
-katalogu projektu. Nie wdrażaj SQLite na środowisku serverless z nietrwałym
-dyskiem, np. w typowej konfiguracji Vercel — po restarcie instancji plik bazy
-może zniknąć. Użyj VPS/kontenera lub podłącz zewnętrzną bazę, jeśli wdrożenie
-ma być serverless.
+Turso jest zewnętrzną, trwałą bazą libSQL, dlatego aplikację można wdrażać na
+Vercel i innych środowiskach serverless. Endpointy API mają runtime Node.js,
+nie Edge Runtime.
 
-3. LOKALIZACJA PLIKU BAZY
-------------------------
-Przy pierwszym wywołaniu endpointu konta aplikacja samoczynnie utworzy:
-
-  data/terminal-rpg.sqlite
-
-Katalog data/ jest ignorowany przez Git. Aby zachować konta i zapisy po
-wdrożeniu, zamontuj go jako trwały wolumen, np. jako /app/data w kontenerze.
-Nie należy wystawiać tego pliku publicznie ani commitować go do repozytorium.
-
-4. TABELE SQLITE
-----------------
+3. TABELE TURSO/LIBSQL
+----------------------
 Tabela users przechowuje konto i hash hasła scrypt.
 Tabela sessions przechowuje tokeny sesji (ciasteczko HTTP-only).
 Tabela game_saves przechowuje jeden zapis JSON dla każdego użytkownika.
 
-Schemat jest tworzony automatycznie. Gdy trzeba odtworzyć bazę ręcznie,
-uruchom w kliencie sqlite3 poniższe polecenia:
+Schemat jest tworzony automatycznie przy pierwszym żądaniu API. Gdy trzeba
+utworzyć go ręcznie, otwórz konsolę bazy w panelu Turso i uruchom:
 
-  sqlite3 data/terminal-rpg.sqlite
-
-  PRAGMA journal_mode = WAL;
   CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT NOT NULL UNIQUE COLLATE NOCASE,
@@ -82,9 +75,7 @@ uruchom w kliencie sqlite3 poniższe polecenia:
       updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
   );
 
-  .quit
-
-5. KOMENDY W GRZE
+4. KOMENDY W GRZE
 -----------------
   help
   register <nazwa> <hasło>
@@ -109,4 +100,3 @@ Przykładowa pierwsza sesja:
   new knight
   attack
   save
-

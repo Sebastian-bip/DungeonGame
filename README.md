@@ -4,13 +4,13 @@ Terminalowe RPG zbudowane w Next.js. Wyprawa obejmuje 20 kolejnych komnat: walki
 
 ## Uruchomienie
 
-Wymagany jest Node.js 22.5+ (projekt korzysta z wbudowanego `node:sqlite`; zalecany jest Node 24).
+Wymagany jest Node.js 20.9+ oraz skonfigurowane zmienne Turso: `TURSO_DATABASE_URL` i `TURSO_AUTH_TOKEN` w `.env.local` lokalnie lub w konfiguracji zmiennych środowiskowych hostingu.
 
 ```bash
 npm run dev
 ```
 
-Przy pierwszej operacji konta automatycznie powstanie `data/terminal-rpg.sqlite`. Katalog `data/` jest lokalnym magazynem zapisów i nie powinien trafiać do repozytorium.
+Przy pierwszej operacji konta aplikacja automatycznie tworzy tabele na bazie Turso. Token dostępu nie powinien trafiać do Git ani do kodu klienckiego.
 
 ## Najważniejsze komendy
 

@@ -1,14 +1,10 @@
 import "server-only";
-import { mkdirSync } from "node:fs";
-import { join } from "node:path";
-import { DatabaseSync } from "node:sqlite";
+import { createClient, type Client } from "@libsql/client";
 
-const dataDirectory = join(process.cwd(), "data");
-mkdirSync(dataDirectory, { recursive: true });
+let client: Client | null = null;
+let schemaPromise: Promise<void> | null = null;
 
-const database = new DatabaseSync(join(dataDirectory, "terminal-rpg.sqlite"));
-database.exec(`
-    PRAGMA journal_mode = WAL;
+const schema = `
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT NOT NULL UNIQUE COLLATE NOCASE,
@@ -25,6 +21,18 @@ database.exec(`
         state_json TEXT NOT NULL,
         updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
-`);
+`;
 
-export { database };
+/** Zwraca współdzielone połączenie Turso i upewnia się, że schemat istnieje. */
+export async function getDatabase(): Promise<Client> {
+    const url = process.env.TURSO_DATABASE_URL;
+    const authToken = process.env.TURSO_AUTH_TOKEN;
+    if (!url || !authToken) {
+        throw new Error("Brak TURSO_DATABASE_URL lub TURSO_AUTH_TOKEN w zmiennych środowiskowych.");
+    }
+
+    client ??= createClient({ url, authToken });
+    schemaPromise ??= client.executeMultiple(schema);
+    await schemaPromise;
+    return client;
+}
