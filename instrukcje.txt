@@ -1,0 +1,112 @@
+INSTRUKCJA WDROŻENIA API I SQLITE — DUNGEON: ECHOES BELOW
+===========================================================
+
+1. GDZIE ZNAJDUJE SIĘ API
+-------------------------
+API jest częścią tej samej aplikacji Next.js. Nie wstawiaj go do osobnego
+serwera PHP/Express ani do katalogu public/. Przy uruchamianiu aplikacji Next
+automatycznie udostępnia ono endpointy z katalogu:
+
+  src/app/api/
+
+Aktualne endpointy:
+  POST /api/auth/register  body: { "username": "nazwa", "password": "hasło" }
+  POST /api/auth/login     body: { "username": "nazwa", "password": "hasło" }
+  POST /api/auth/logout
+  GET  /api/auth/me
+  POST /api/game/save      body: { "state": <aktualny stan gry> }
+  GET  /api/game/load
+
+Kod bazy i uwierzytelniania jest w:
+  src/lib/server/database.ts
+  src/lib/server/auth.ts
+
+2. WYMAGANE ŚRODOWISKO
+----------------------
+Wymagany jest Node.js 22.5 lub nowszy; zalecany jest Node.js 24.
+Projekt korzysta z wbudowanego modułu node:sqlite, więc nie trzeba instalować
+pakietów sqlite3 ani better-sqlite3.
+
+W katalogu projektu uruchom:
+
+  npm install
+  npm run dev
+
+Produkcja:
+
+  npm run build
+  npm run start
+
+Serwer musi działać jako Node.js (nie Edge Runtime) i mieć trwały zapis do
+katalogu projektu. Nie wdrażaj SQLite na środowisku serverless z nietrwałym
+dyskiem, np. w typowej konfiguracji Vercel — po restarcie instancji plik bazy
+może zniknąć. Użyj VPS/kontenera lub podłącz zewnętrzną bazę, jeśli wdrożenie
+ma być serverless.
+
+3. LOKALIZACJA PLIKU BAZY
+------------------------
+Przy pierwszym wywołaniu endpointu konta aplikacja samoczynnie utworzy:
+
+  data/terminal-rpg.sqlite
+
+Katalog data/ jest ignorowany przez Git. Aby zachować konta i zapisy po
+wdrożeniu, zamontuj go jako trwały wolumen, np. jako /app/data w kontenerze.
+Nie należy wystawiać tego pliku publicznie ani commitować go do repozytorium.
+
+4. TABELE SQLITE
+----------------
+Tabela users przechowuje konto i hash hasła scrypt.
+Tabela sessions przechowuje tokeny sesji (ciasteczko HTTP-only).
+Tabela game_saves przechowuje jeden zapis JSON dla każdego użytkownika.
+
+Schemat jest tworzony automatycznie. Gdy trzeba odtworzyć bazę ręcznie,
+uruchom w kliencie sqlite3 poniższe polecenia:
+
+  sqlite3 data/terminal-rpg.sqlite
+
+  PRAGMA journal_mode = WAL;
+  CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT NOT NULL UNIQUE COLLATE NOCASE,
+      password_hash TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  );
+  CREATE TABLE IF NOT EXISTS sessions (
+      token TEXT PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      expires_at INTEGER NOT NULL
+  );
+  CREATE TABLE IF NOT EXISTS game_saves (
+      user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+      state_json TEXT NOT NULL,
+      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  );
+
+  .quit
+
+5. KOMENDY W GRZE
+-----------------
+  help
+  register <nazwa> <hasło>
+  login <nazwa> <hasło>
+  logout
+  new mage|bandit|knight
+  attack
+  next
+  use healing_potion
+  shop
+  buy <id>
+  leave
+  event enter|leave
+  upgrade power|armor|agility|luck|health
+  status
+  stats
+  save
+  load
+
+Przykładowa pierwsza sesja:
+  register gracz01 BardzoTajneHaslo
+  new knight
+  attack
+  save
+

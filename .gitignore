@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# local SQLite game saves
+/data/
+
 # production
 /build
 
